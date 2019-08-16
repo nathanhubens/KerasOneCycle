@@ -58,10 +58,10 @@ class OneCycle(Callback):
     def clr(self):
         if self.iterations < 2*self.step_size :
             x = np.abs(self.iterations/self.step_size - 1)
-            return self.min_lr + (self.max_lr-self.min_lr)*(1-x)
+            return self.min_lr + 0.5 * (self.max_lr - self.min_lr) * (1 + np.cos(x * np.pi))
         else:
             x = min(1, float(self.iterations - 2 * self.step_size) / (self.training_iterations - 2 * self.step_size))
-            return self.min_lr - (self.min_lr - self.min_annealing_lr) * x
+            return self.min_lr - 0.5 * (self.min_lr - self.min_annealing_lr) * (1 + np.cos((1-x) * np.pi))
         
     
     def cmtm(self):
@@ -69,7 +69,7 @@ class OneCycle(Callback):
             x = np.abs(self.iterations/self.step_size - 1)
         else: 
             x=1
-        return self.min_mtm + (self.max_mtm-self.min_mtm)*(x)     
+        return self.min_mtm + 0.5 * (self.max_mtm - self.min_mtm) * (1 + np.cos((1-x) * np.pi))
         
     def on_train_begin(self, logs={}):
         logs = logs or {}
